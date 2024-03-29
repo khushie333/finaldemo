@@ -23,8 +23,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.UserModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-// Define user schema
 const userSchema = new mongoose_1.Schema({
     name: {
         type: String,
@@ -42,6 +42,14 @@ const userSchema = new mongoose_1.Schema({
             message: 'Invalid email',
         },
     },
+    phone: {
+        type: String,
+        required: true,
+    },
+    address: {
+        type: String,
+        required: true,
+    },
     password: {
         type: String,
         required: true,
@@ -52,5 +60,5 @@ const userSchema = new mongoose_1.Schema({
     },
 });
 // Define and export user model
-const UserModel = mongoose_1.default.model('User', userSchema);
-exports.default = UserModel;
+exports.UserModel = mongoose_1.default.model('user', userSchema);
+exports.default = exports.UserModel;

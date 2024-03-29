@@ -1,15 +1,15 @@
-import mongoose, { Schema, Document } from 'mongoose'
+import mongoose, { Schema, Document, Model } from 'mongoose'
 
-// Define interface for user document
-interface User extends Document {
+export interface User extends Document {
 	name: string
 	email: string
+	phone: string
+	address: string
 	password: string
 	active: boolean // Optional field
 }
 
-// Define user schema
-const userSchema = new Schema<User>({
+const userSchema: Schema<User> = new Schema<User>({
 	name: {
 		type: String,
 		required: true,
@@ -26,6 +26,14 @@ const userSchema = new Schema<User>({
 			message: 'Invalid email',
 		},
 	},
+	phone: {
+		type: String,
+		required: true,
+	},
+	address: {
+		type: String,
+		required: true,
+	},
 	password: {
 		type: String,
 		required: true,
@@ -37,6 +45,6 @@ const userSchema = new Schema<User>({
 })
 
 // Define and export user model
-const UserModel = mongoose.model<User>('User', userSchema)
+export const UserModel: Model<User> = mongoose.model<User>('user', userSchema)
 
 export default UserModel

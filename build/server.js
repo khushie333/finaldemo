@@ -4,26 +4,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
+const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+//import bodyParser from 'body-parser'
+const user_routes_1 = __importDefault(require("./routes/user.routes"));
+const authentication_routes_1 = __importDefault(require("./routes/authentication.routes"));
+const email_routes_1 = __importDefault(require("./routes/email.routes"));
+const car_routes_1 = __importDefault(require("./routes/car.routes"));
 const connectDB_1 = require("./config/connectDB");
-// Instantiate AppConfig and initialize
 const appConfig = new connectDB_1.AppConfig();
 appConfig.initialize();
-// Access MongoDB URL and server port
+//const app = express()
+const app = (0, express_1.default)();
+app.use(express_1.default.json());
+//app.use(bodyParser.json()) // for parsing application/json
+app.use(express_1.default.urlencoded({ extended: true, limit: '10mb' }));
+//app.use(express.urlencoded({ extended: true }))
+app.use((0, cors_1.default)());
+app.use((0, cors_1.default)({ origin: 'http://localhost:3000' }));
 const mongoUrl = appConfig.getMongoUrl();
-const serverPort = appConfig.getServerPort(); // Added
-// Connect to MongoDB cluster
+const serverPort = appConfig.getServerPort();
+// Connecting to MongoDB cluster
 mongoose_1.default
-    .connect(mongoUrl) // Use new connection options
+    .connect(mongoUrl)
     .then(() => {
     console.log('MongoDB connected successfully');
-    // Start your server or perform any other operations here
 })
     .catch((error) => {
     console.error('Error connecting to MongoDB:', error);
 });
-// Example: Start a server
-// const express = require('express');
-// const app = express();
-// app.listen(serverPort, () => {
-//     console.log(`Server is running on port ${serverPort}`);
-// });
+const port = process.env.PORT || serverPort;
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
+app.use('/api', user_routes_1.default);
+app.use('/api', authentication_routes_1.default);
+app.use('/api', email_routes_1.default);
+app.use('/api', car_routes_1.default);
+exports.default = app;

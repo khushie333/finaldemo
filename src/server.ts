@@ -1,29 +1,51 @@
 import mongoose from 'mongoose'
+import express, { Application } from 'express'
+import cors from 'cors'
+//import bodyParser from 'body-parser'
+
+import userRoutes from './routes/user.routes'
+import authenticateRoutes from './routes/authentication.routes'
+import emailRoutes from './routes/email.routes'
+import carRoutes from './routes/car.routes'
+
 import { AppConfig } from './config/connectDB'
 
-// Instantiate AppConfig and initialize
 const appConfig = new AppConfig()
 appConfig.initialize()
 
-// Access MongoDB URL and server port
-const mongoUrl = appConfig.getMongoUrl()
-const serverPort = appConfig.getServerPort() // Added
+//const app = express()
+const app: Application = express()
+app.use(express.json())
+//app.use(bodyParser.json()) // for parsing application/json
+app.use(express.urlencoded({ extended: true, limit: '10mb' }))
+//app.use(express.urlencoded({ extended: true }))
+app.use(cors())
 
-// Connect to MongoDB cluster
+app.use(cors({ origin: 'http://localhost:3000' }))
+
+const mongoUrl = appConfig.getMongoUrl()
+
+const serverPort = appConfig.getServerPort()
+
+// Connecting to MongoDB cluster
 mongoose
-	.connect(mongoUrl) // Use new connection options
+	.connect(mongoUrl)
 	.then(() => {
 		console.log('MongoDB connected successfully')
-		// Start your server or perform any other operations here
 	})
 	.catch((error) => {
 		console.error('Error connecting to MongoDB:', error)
 	})
 
-// Example: Start a server
-// const express = require('express');
-// const app = express();
+const port = process.env.PORT || serverPort
+app.listen(port, () => {
+	console.log(`Server is running on port ${port}`)
+})
 
-// app.listen(serverPort, () => {
-//     console.log(`Server is running on port ${serverPort}`);
-// });
+app.use('/api', userRoutes)
+app.use('/api', authenticateRoutes)
+
+app.use('/api', emailRoutes)
+app.use('/api', carRoutes)
+
+export default app
