@@ -13,7 +13,3 @@ iocContainer.bind<AppConfig>(AppConfig).to(AppConfig).inSingletonScope()
 // 	.bind<UserService>(TYPES.UserService)
 // 	.to(UserService)
 // 	.inSingletonScope()
-// iocContainer
-// 	.bind<ArticleService>(TYPES.ArticleService)
-// 	.to(ArticleService)
-// 	.inSingletonScope()

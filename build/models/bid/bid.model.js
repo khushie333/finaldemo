@@ -23,41 +23,23 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.carModel = void 0;
+exports.bidModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const carSchema = new mongoose_1.Schema({
+const bidSchema = new mongoose_1.Schema({
+    car: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: 'Car',
+        required: true,
+    },
     user: {
-        type: String,
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
-    brand: {
-        type: String,
-        required: true,
-    },
-    Model: {
-        type: String,
-        required: true,
-    },
-    desc: {
-        type: String,
-        required: true,
-    },
-    owner: {
-        type: String,
-        required: true,
-    },
-    baseAmount: {
+    amount: {
         type: Number,
         required: true,
     },
-    bidStartDate: {
-        type: Date,
-        required: true,
-    },
-    bidEndDate: {
-        type: Date,
-        required: true,
-    },
-});
-exports.carModel = mongoose_1.default.model('car', carSchema);
-exports.default = exports.carModel;
+}, { timestamps: true });
+exports.bidModel = mongoose_1.default.model('Bid', bidSchema);
+exports.default = exports.bidModel;

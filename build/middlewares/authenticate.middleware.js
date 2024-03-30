@@ -20,7 +20,7 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // Extract token from Authorization header
         const authHeader = req.headers.authorization;
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            throw new Error('Authentication token not provided');
+            throw new Error('🔍Authentication token not provided');
         }
         const token = authHeader.split(' ')[1];
         // Verify token
@@ -32,7 +32,7 @@ const authenticateUser = (req, res, next) => __awaiter(void 0, void 0, void 0, f
         // Fetch user from database using userID
         const user = yield user_model_1.default.findById(decodedToken.userID);
         if (!user) {
-            throw new Error('User not found');
+            throw new Error('🔍User not found');
         }
         // Attach user object to request
         req.user = user;

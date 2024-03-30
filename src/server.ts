@@ -7,6 +7,11 @@ import userRoutes from './routes/user.routes'
 import authenticateRoutes from './routes/authentication.routes'
 import emailRoutes from './routes/email.routes'
 import carRoutes from './routes/car.routes'
+import bidRoutes from './routes/bid.routes'
+import {
+	errorHandler,
+	handleError,
+} from './middlewares/errorHandling.middleware'
 
 import { AppConfig } from './config/connectDB'
 
@@ -47,5 +52,9 @@ app.use('/api', authenticateRoutes)
 
 app.use('/api', emailRoutes)
 app.use('/api', carRoutes)
+app.use('/api', bidRoutes)
+
+app.use(errorHandler)
+app.use(handleError)
 
 export default app

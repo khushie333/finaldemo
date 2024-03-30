@@ -15,7 +15,7 @@ export const authenticateUser = async (
 		// Extract token from Authorization header
 		const authHeader = req.headers.authorization
 		if (!authHeader || !authHeader.startsWith('Bearer ')) {
-			throw new Error('Authentication token not provided')
+			throw new Error('🔍Authentication token not provided')
 		}
 
 		const token = authHeader.split(' ')[1]
@@ -34,7 +34,7 @@ export const authenticateUser = async (
 		// Fetch user from database using userID
 		const user: User | null = await userModel.findById(decodedToken.userID)
 		if (!user) {
-			throw new Error('User not found')
+			throw new Error('🔍User not found')
 		}
 
 		// Attach user object to request

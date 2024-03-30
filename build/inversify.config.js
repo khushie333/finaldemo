@@ -13,7 +13,3 @@ exports.iocContainer.bind(connectDB_1.AppConfig).to(connectDB_1.AppConfig).inSin
 // 	.bind<UserService>(TYPES.UserService)
 // 	.to(UserService)
 // 	.inSingletonScope()
-// iocContainer
-// 	.bind<ArticleService>(TYPES.ArticleService)
-// 	.to(ArticleService)
-// 	.inSingletonScope()

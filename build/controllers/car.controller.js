@@ -18,6 +18,7 @@ const car_model_1 = require("../models/car/car.model");
 class CarController {
 }
 _a = CarController;
+//createCar
 CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authorization = req.headers.authorization;
@@ -67,6 +68,7 @@ CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, functi
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+//get All the cars
 CarController.getAllCars = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield car_model_1.carModel.find();
@@ -77,6 +79,7 @@ CarController.getAllCars = (req, res) => __awaiter(void 0, void 0, void 0, funct
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+//get Single car by id
 CarController.getSingleCarById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const result = yield car_model_1.carModel.findById(req.params.id);
@@ -91,6 +94,7 @@ CarController.getSingleCarById = (req, res) => __awaiter(void 0, void 0, void 0,
         res.status(500).send({ error: 'Internal Server Error' });
     }
 });
+//update car by id
 CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authorization = req.headers.authorization;
@@ -122,6 +126,7 @@ CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+// delete car by id
 CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const authorization = req.headers.authorization;
@@ -155,6 +160,7 @@ CarController.deleteCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
         res.status(500).json({ message: 'Internal Server Error' });
     }
 });
+//search car by id
 CarController.search = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const search = req.query.search;
@@ -177,23 +183,26 @@ CarController.search = (req, res) => __awaiter(void 0, void 0, void 0, function*
         res.status(500).json({ error: 'Internal Server Error' });
     }
 });
+//filter cars by baseAmount
 CarController.filterByBaseAmount = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const minPrice = Number(req.query.minPrice);
         const maxPrice = Number(req.query.maxPrice);
-        if (isNaN(minPrice) || isNaN(maxPrice)) {
+        if (isNaN(minPrice) && isNaN(maxPrice)) {
             res.status(400).json({ error: 'Invalid minPrice or maxPrice' });
             return;
         }
-        // console.log('minPrice:', minPrice)
-        // console.log('maxPrice:', maxPrice)
+        const priceCriteria = {};
+        if (!isNaN(minPrice)) {
+            priceCriteria.$gte = minPrice;
+        }
+        if (!isNaN(maxPrice)) {
+            priceCriteria.$lte = maxPrice;
+        }
         const filteredCars = yield car_model_1.carModel.find({
-            $or: [
-                { baseAmount: { $gte: minPrice } },
-                { baseAmount: { $lte: maxPrice } },
-            ],
+            baseAmount: priceCriteria,
         });
-        console.log(filteredCars);
+        //console.log(filteredCars)
         res.json({ cars: filteredCars });
     }
     catch (error) {

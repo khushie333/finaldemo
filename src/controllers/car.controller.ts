@@ -10,6 +10,7 @@ declare const process: {
 	env: ProcessEnv
 }
 class CarController {
+	//createCar
 	static createCar = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const authorization = req.headers.authorization
@@ -75,6 +76,8 @@ class CarController {
 			res.status(500).send({ error: 'Internal Server Error' })
 		}
 	}
+
+	//get All the cars
 	static getAllCars = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const result = await carModel.find()
@@ -85,6 +88,7 @@ class CarController {
 		}
 	}
 
+	//get Single car by id
 	static getSingleCarById = async (
 		req: Request,
 		res: Response
@@ -101,6 +105,8 @@ class CarController {
 			res.status(500).send({ error: 'Internal Server Error' })
 		}
 	}
+
+	//update car by id
 	static updateCarById = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const authorization = req.headers.authorization
@@ -139,6 +145,8 @@ class CarController {
 			res.status(500).json({ message: 'Internal Server Error' })
 		}
 	}
+
+	// delete car by id
 	static deleteCarById = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const authorization = req.headers.authorization
@@ -179,6 +187,8 @@ class CarController {
 			res.status(500).json({ message: 'Internal Server Error' })
 		}
 	}
+
+	//search car by id
 	static search = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const search: string | undefined = req.query.search as string | undefined
@@ -202,6 +212,8 @@ class CarController {
 			res.status(500).json({ error: 'Internal Server Error' })
 		}
 	}
+
+	//filter cars by baseAmount
 	static filterByBaseAmount = async (
 		req: Request,
 		res: Response
@@ -210,20 +222,26 @@ class CarController {
 			const minPrice: number = Number(req.query.minPrice)
 			const maxPrice: number = Number(req.query.maxPrice)
 
-			if (isNaN(minPrice) || isNaN(maxPrice)) {
+			if (isNaN(minPrice) && isNaN(maxPrice)) {
 				res.status(400).json({ error: 'Invalid minPrice or maxPrice' })
 				return
 			}
-			// console.log('minPrice:', minPrice)
-			// console.log('maxPrice:', maxPrice)
+
+			const priceCriteria: any = {}
+
+			if (!isNaN(minPrice)) {
+				priceCriteria.$gte = minPrice
+			}
+
+			if (!isNaN(maxPrice)) {
+				priceCriteria.$lte = maxPrice
+			}
 
 			const filteredCars = await carModel.find({
-				$or: [
-					{ baseAmount: { $gte: minPrice } },
-					{ baseAmount: { $lte: maxPrice } },
-				],
+				baseAmount: priceCriteria,
 			})
-			console.log(filteredCars)
+
+			//console.log(filteredCars)
 			res.json({ cars: filteredCars })
 		} catch (error) {
 			console.error(error)

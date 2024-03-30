@@ -21,7 +21,6 @@ const carSchema: Schema<ICar> = new Schema<ICar>({
 		required: true,
 	},
 	Model: {
-		// Changed from 'model' to 'carModel'
 		type: String,
 		required: true,
 	},

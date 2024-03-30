@@ -23,12 +23,12 @@ export class AppConfig {
 
 	initialize(): void {
 		const MONGO_DB_PASSWORD = process.env.MONGO_DB_PASSWORD || ''
-		const MONGO_URL = process.env.url || '' // Change 'url' to 'MONGO_URL'
+		const MONGO_URL = process.env.url || ''
 		const DATABASE_NAME = process.env.DATABASE_NAME || ''
-		const PORT = process.env.PORT || '5000' // Default port
+		const PORT = process.env.PORT || '5000'
 
 		this.mongoUrl = `${MONGO_URL}/${DATABASE_NAME}` // Concatenate MONGO_URL and DATABASE_NAME
-		this.serverPort = Number(PORT) // Convert PORT to number
+		this.serverPort = Number(PORT)
 		this.databaseName = DATABASE_NAME
 	}
 
