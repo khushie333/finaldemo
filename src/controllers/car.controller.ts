@@ -1,6 +1,33 @@
 import { Request, Response } from 'express'
 import jwt, { Jwt, JwtPayload } from 'jsonwebtoken'
+import multer, { Multer } from 'multer'
+import { RequestHandler } from 'express'
+import { extname } from 'path'
+import { ParamsDictionary } from 'express-serve-static-core'
+import { ParsedQs } from 'qs'
+
 import { carModel } from '../models/car/car.model'
+//import { upload } from '../middlewares/multer.middleware'
+
+const storage = multer.diskStorage({
+	destination: (req, file, cb) => {
+		cb(null, 'uploads/') // Destination directory for uploaded files
+	},
+	filename: (req, file, callback) => {
+		const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9)
+		const ext = extname(file.originalname)
+		const filename = `${uniqueSuffix}${ext}`
+		callback(null, filename)
+	},
+})
+
+export const upload: RequestHandler<
+	ParamsDictionary,
+	any,
+	any,
+	ParsedQs,
+	Record<string, any>
+> = multer({ storage }).single('images')
 
 interface ProcessEnv {
 	[key: string]: string
@@ -9,8 +36,10 @@ interface ProcessEnv {
 declare const process: {
 	env: ProcessEnv
 }
+
 class CarController {
 	//createCar
+
 	static createCar = async (req: Request, res: Response): Promise<void> => {
 		try {
 			const authorization = req.headers.authorization
@@ -63,6 +92,7 @@ class CarController {
 				Model,
 				desc,
 				owner,
+				images: req?.file?.originalname,
 				baseAmount,
 				bidStartDate,
 				bidEndDate,
@@ -126,18 +156,20 @@ class CarController {
 				process.env.JWT_SECRET_KEY
 			) as Jwt & JwtPayload
 			const userID = decodedToken.userID as string
+			//console.log(userID)
 
 			const car = await carModel.findById(req.params.id)
 			if (!car) {
 				res.status(404).json({ message: 'Car not found' })
 				return
 			}
+			//console.log(String(car.user))
 
 			if (String(car.user) !== userID) {
 				res.status(403).json({ message: 'Unauthorized user' })
 				return
 			}
-
+			//console.log(req.body)
 			const result = await carModel.findByIdAndUpdate(req.params.id, req.body)
 			res.status(200).send(result)
 		} catch (error) {

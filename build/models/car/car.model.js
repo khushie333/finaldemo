@@ -46,6 +46,7 @@ const carSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    images: { type: String },
     baseAmount: {
         type: Number,
         required: true,

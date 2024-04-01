@@ -13,13 +13,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.upload = void 0;
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const multer_1 = __importDefault(require("multer"));
+const path_1 = require("path");
 const car_model_1 = require("../models/car/car.model");
+//import { upload } from '../middlewares/multer.middleware'
+const storage = multer_1.default.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Destination directory for uploaded files
+    },
+    filename: (req, file, callback) => {
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+        const ext = (0, path_1.extname)(file.originalname);
+        const filename = `${uniqueSuffix}${ext}`;
+        callback(null, filename);
+    },
+});
+exports.upload = (0, multer_1.default)({ storage }).single('images');
 class CarController {
 }
 _a = CarController;
 //createCar
 CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _b;
     try {
         const authorization = req.headers.authorization;
         if (!authorization) {
@@ -55,6 +72,7 @@ CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, functi
             Model,
             desc,
             owner,
+            images: (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.originalname,
             baseAmount,
             bidStartDate,
             bidEndDate,
@@ -109,15 +127,18 @@ CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
         }
         const decodedToken = jsonwebtoken_1.default.verify(token, process.env.JWT_SECRET_KEY);
         const userID = decodedToken.userID;
+        //console.log(userID)
         const car = yield car_model_1.carModel.findById(req.params.id);
         if (!car) {
             res.status(404).json({ message: 'Car not found' });
             return;
         }
+        //console.log(String(car.user))
         if (String(car.user) !== userID) {
             res.status(403).json({ message: 'Unauthorized user' });
             return;
         }
+        //console.log(req.body)
         const result = yield car_model_1.carModel.findByIdAndUpdate(req.params.id, req.body);
         res.status(200).send(result);
     }

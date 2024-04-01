@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importDefault(require("mongoose"));
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+//import multer from 'multer'
 //import bodyParser from 'body-parser'
 const user_routes_1 = __importDefault(require("./routes/user.routes"));
 const authentication_routes_1 = __importDefault(require("./routes/authentication.routes"));
