@@ -27,7 +27,7 @@ export const upload: RequestHandler<
 	any,
 	ParsedQs,
 	Record<string, any>
-> = multer({ storage }).single('images')
+> = multer({ storage }).array('images', 5)
 
 interface ProcessEnv {
 	[key: string]: string
@@ -85,14 +85,15 @@ class CarController {
 				console.error(error)
 				res.status(500).json({ error: 'Internal Server Error' })
 			}
-
+			const files = req.files as Express.Multer.File[]
+			const images = files.map((file) => file.originalname)
 			const carData = new carModel({
 				user: userID,
 				brand,
 				Model,
 				desc,
 				owner,
-				images: req?.file?.originalname,
+				images,
 				baseAmount,
 				bidStartDate,
 				bidEndDate,
@@ -170,7 +171,21 @@ class CarController {
 				return
 			}
 			//console.log(req.body)
-			const result = await carModel.findByIdAndUpdate(req.params.id, req.body)
+			let updatedImageData = {}
+			if (req.file) {
+				// Handle image upload and update image path
+				const imagePath = req.file.originalname
+				updatedImageData = { ...req.body, images: imagePath }
+			} else {
+				// No new image file, update other fields only
+				updatedImageData = req.body
+			}
+
+			const result = await carModel.findByIdAndUpdate(
+				req.params.id,
+				updatedImageData,
+				{ new: true }
+			)
 			res.status(200).send(result)
 		} catch (error) {
 			console.error(error)

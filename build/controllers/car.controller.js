@@ -30,13 +30,12 @@ const storage = multer_1.default.diskStorage({
         callback(null, filename);
     },
 });
-exports.upload = (0, multer_1.default)({ storage }).single('images');
+exports.upload = (0, multer_1.default)({ storage }).array('images', 5);
 class CarController {
 }
 _a = CarController;
 //createCar
 CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
     try {
         const authorization = req.headers.authorization;
         if (!authorization) {
@@ -66,13 +65,15 @@ CarController.createCar = (req, res) => __awaiter(void 0, void 0, void 0, functi
             console.error(error);
             res.status(500).json({ error: 'Internal Server Error' });
         }
+        const files = req.files;
+        const images = files.map((file) => file.originalname);
         const carData = new car_model_1.carModel({
             user: userID,
             brand,
             Model,
             desc,
             owner,
-            images: (_b = req === null || req === void 0 ? void 0 : req.file) === null || _b === void 0 ? void 0 : _b.originalname,
+            images,
             baseAmount,
             bidStartDate,
             bidEndDate,
@@ -139,7 +140,17 @@ CarController.updateCarById = (req, res) => __awaiter(void 0, void 0, void 0, fu
             return;
         }
         //console.log(req.body)
-        const result = yield car_model_1.carModel.findByIdAndUpdate(req.params.id, req.body);
+        let updatedImageData = {};
+        if (req.file) {
+            // Handle image upload and update image path
+            const imagePath = req.file.originalname;
+            updatedImageData = Object.assign(Object.assign({}, req.body), { images: imagePath });
+        }
+        else {
+            // No new image file, update other fields only
+            updatedImageData = req.body;
+        }
+        const result = yield car_model_1.carModel.findByIdAndUpdate(req.params.id, updatedImageData, { new: true });
         res.status(200).send(result);
     }
     catch (error) {

@@ -6,7 +6,7 @@ export interface ICar extends Document {
 	Model: string
 	desc: string
 	owner: string
-	images: string
+	images: [String]
 	baseAmount: number
 	bidStartDate: Date
 	bidEndDate: Date
@@ -34,7 +34,7 @@ const carSchema: Schema<ICar> = new Schema<ICar>({
 		required: true,
 	},
 
-	images: { type: String },
+	images: { type: [String] },
 
 	baseAmount: {
 		type: Number,
