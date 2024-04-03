@@ -33,16 +33,16 @@ const SearchBrand = ({ brand, setBrand }: SearchBrandProps) => {
 				<div className='relative w-full'>
 					<Combobox.Button className='absolute top-[14px]'>
 						<Image
-							src='/car-logo.svg'
-							width={20}
-							height={20}
+							src='/magnifying-glass.svg'
+							width={25}
+							height={25}
 							className='ml-4'
 							alt='car logo'
 						/>
 					</Combobox.Button>
 					<Combobox.Input
 						className='search-manufacturer__input'
-						placeholder='Volkswagen'
+						placeholder='e.g Volkswagen'
 						displayValue={(brand: string) => brand}
 						onChange={(e) => setQuery(e.target.value)}
 					/>

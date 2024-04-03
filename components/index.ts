@@ -5,6 +5,8 @@ import Footer from './Footer'
 import Navbar from './Navbar'
 import SearchBar from './SearchBar'
 import SearchBrand from './SearchBrand'
+import CarCard from './CarCard'
+import CarDetails from './CarDetails'
 
 export {
 	Dashboard,
@@ -14,4 +16,6 @@ export {
 	SearchBar,
 	CustomFilter,
 	SearchBrand,
+	CarCard,
+	CarDetails,
 }
